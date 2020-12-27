@@ -1,0 +1,14 @@
+{
+    "FileBase": "0x90000000",
+    "OtfDecKey": [ "0x23456789", "0xABCDEF01", "0x23456789", "0xABCDEF01" ],
+    "OtfDecNonce": [ "0xA5A5A5A5", "0xC3C3C3C3" ],
+    "OtfDecVersion": "0x7123",
+    "OtfDecRegion": 3,
+    "OtfDecStart": "0x90000000",
+    "OtfDecEnd": "0x900FDFFF",
+    "AesGcmKey": [ "0xfeffe992", "0x8665731c", "0x6d6a8f94", "0x67308308" ],
+    "AesGcmIv": [ "0xcafebabe", "0xfacedbad", "0xdecaf888" ],
+    "AesGcmBase": "0x900FE000",
+    "AesGcmRegionLength": "0x1000",
+    "AesGcmDataLength": "0x40"
+}

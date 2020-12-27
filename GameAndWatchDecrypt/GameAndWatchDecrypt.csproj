@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>cyanic</Authors>
+    <Company>GMWare</Company>
+    <Product>Game &amp; Watch Encryption Utility</Product>
+    <Description>Manipulates encrypted sections within Game &amp; Watch external flash image.</Description>
+    <Copyright>Copyright (C) 2020 Yukai Li</Copyright>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/GMMan/game-and-watch-decrypt</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GMMan/game-and-watch-decrypt</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0-rc.371" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="keyinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
