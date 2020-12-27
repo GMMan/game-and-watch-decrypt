@@ -68,7 +68,7 @@ namespace GameAndWatchDecrypt
 
             byte[] ciphertext = new byte[plaintext.Length];
             tag = new byte[16];
-            aes.Encrypt(iv, plaintext, ciphertext, tag);
+            aes.Encrypt(iv, plaintextDup, ciphertext, tag);
 
             Utils.ShuffleEndianess(ciphertext);
             Utils.ShuffleEndianess(tag);
