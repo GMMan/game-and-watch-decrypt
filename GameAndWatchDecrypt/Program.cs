@@ -188,6 +188,103 @@ namespace GameAndWatchDecrypt
                 });
             });
 
+            app.Command("otfdec", config =>
+            {
+                config.FullName = "Perform OTFDEC";
+                config.Description = "Performs OTFDEC on a file.";
+
+                var configFilePathOpt = config.Option("--config|-c <key-file>", "Path to key file", CommandOptionType.SingleValue);
+                configFilePathOpt.Accepts().ExistingFile();
+                var dataPathArg = config.Argument("data-path", "Path to file to process").IsRequired();
+                dataPathArg.Accepts().ExistingFile();
+                config.HelpOption();
+
+                config.OnExecute(() =>
+                {
+                    if (configFilePathOpt.HasValue())
+                        configFilePath = configFilePathOpt.Value();
+
+                    LoadKeyInfo();
+                    if (!keyInfoParsed.IsOtfDecPresent)
+                        throw new InvalidOperationException("No OTFDEC key available.");
+
+                    byte[] otfdecData = File.ReadAllBytes(dataPathArg.Value);
+
+                    using OtfDecCryptor otfdec = new OtfDecCryptor(keyInfoParsed.OtfDecKey, keyInfoParsed.OtfDecIv,
+                        keyInfoParsed.FileBase, (uint)(keyInfoParsed.FileBase + otfdecData.Length));
+                    otfdec.Crypt(otfdecData, 0, otfdecData.Length, keyInfoParsed.FileBase);
+
+                    File.WriteAllBytes(dataPathArg.Value, otfdecData);
+                });
+            });
+
+            app.Command("aesdec", config =>
+            {
+                config.FullName = "Perform AES-GCM decryption";
+                config.Description = "Performs AES-GCM decryption on a file.";
+
+                var configFilePathOpt = config.Option("--config|-c <key-file>", "Path to key file", CommandOptionType.SingleValue);
+                configFilePathOpt.Accepts().ExistingFile();
+                var dataPathArg = config.Argument("data-path", "Path to file to process").IsRequired();
+                dataPathArg.Accepts().ExistingFile();
+                config.HelpOption();
+
+                config.OnExecute(() =>
+                {
+                    if (configFilePathOpt.HasValue())
+                        configFilePath = configFilePathOpt.Value();
+
+                    LoadKeyInfo();
+                    if (!keyInfoParsed.IsAesGcmPresent)
+                        throw new InvalidOperationException("No AES-GCM key available.");
+
+                    byte[] tag, ciphertext;
+                    using (FileStream fs = File.OpenRead(dataPathArg.Value))
+                    {
+                        BinaryReader br = new BinaryReader(fs);
+                        tag = br.ReadBytes(16);
+                        ciphertext = br.ReadBytes((int)(fs.Length - tag.Length));
+                    }
+
+                    using AesGcmCryptor aes = new AesGcmCryptor(keyInfoParsed.AesGcmKey, keyInfoParsed.AesGcmIv);
+                    byte[] aesData = aes.Decrypt(ciphertext, tag);
+
+                    File.WriteAllBytes(dataPathArg.Value, aesData);
+                });
+            });
+
+            app.Command("aesenc", config =>
+            {
+                config.FullName = "Perform AES-GCM encryption";
+                config.Description = "Performs AES-GCM encryption on a file.";
+
+                var configFilePathOpt = config.Option("--config|-c <key-file>", "Path to key file", CommandOptionType.SingleValue);
+                configFilePathOpt.Accepts().ExistingFile();
+                var dataPathArg = config.Argument("data-path", "Path to file to process").IsRequired();
+                dataPathArg.Accepts().ExistingFile();
+                config.HelpOption();
+
+                config.OnExecute(() =>
+                {
+                    if (configFilePathOpt.HasValue())
+                        configFilePath = configFilePathOpt.Value();
+
+                    LoadKeyInfo();
+                    if (!keyInfoParsed.IsAesGcmPresent)
+                        throw new InvalidOperationException("No AES-GCM key available.");
+
+                    byte[] plaintext = File.ReadAllBytes(dataPathArg.Value);
+
+                    using AesGcmCryptor aes = new AesGcmCryptor(keyInfoParsed.AesGcmKey, keyInfoParsed.AesGcmIv);
+                    byte[] tag;
+                    byte[] aesData = aes.Encrypt(plaintext, out tag);
+
+                    using FileStream fs = File.Create(dataPathArg.Value);
+                    fs.Write(tag);
+                    fs.Write(aesData);
+                });
+            });
+
             app.VersionOptionFromAssemblyAttributes(System.Reflection.Assembly.GetExecutingAssembly());
             app.HelpOption();
 

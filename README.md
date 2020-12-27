@@ -54,10 +54,20 @@ To build a new image, you could run the following:
 GameAndWatchDecrypt import -d main_data.bin -n1 nvram1.bin -n2 nvram2.bin new_image.bin
 ```
 
-Using as standalone encryptor
------------------------------
+Standalone mode
+---------------
 
 You may use this program as a standalone encryptor for your own STM32
-application. You may omit either OTFDEC or AES-GCM params. Just set your offsets
-and keys accordingly, and the program will take care of properly encrypting the
-data.
+application. Set the key params for the encryption you are using then use one
+of the following commands:
+
+- `otfdec`: Encrypts/decrypts OTFDEC region. File is "loaded" at file base
+  address in the config, so be sure to set it and your OTFDEC start/end
+  addresses correctly. Replaces plaintext file with ciphertext and vice versa.
+- `aesenc`: Encrypts using AES-GCM. Replaces plaintext file with tag and
+  ciphertext concatenated.
+- `aesdec`: Decrypts using AES-GCM. Replaces file with tag and ciphertext
+  concatenated, with plaintext.
+
+Each command takes the path of the file you want to operate on and replaces the
+contents of the file with the resulting data.
