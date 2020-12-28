@@ -3,7 +3,7 @@ Game & Watch Encryption Utility
 
 This program allows you to import and export data to and from your Game & Watch:
 Super Mario Bros. external flash dump. This program supports the main data
-region encrypted via OTFDEC and also both NVRAM regions encrypted using
+region encrypted via OTFDEC, and also both NVRAM regions encrypted via
 AES-GCM.
 
 Configuration
@@ -11,17 +11,17 @@ Configuration
 
 First, you must create your config file. Please use `keyinfo.sample.json` as
 a template, filling in the keys and IVs with actual values for the Game & Watch.
-Save this file as `keyinfo.json` in the executable's directory.
+Save this file as `keyinfo.json` in your working directory.
 
 The keys may be found in the following offsets in the Game & Watch's memory:
 - OTFDEC
   - Key: 0x080106f4
-  - Nonce: 0x0801106e4
+  - Nonce: 0x080106e4
 - AES-GCM
   - Key: 0x200011c8
   - IV: 0x200011d8
 
-Note that the program expects the keys as arrays of uints, as is how the keys
+Note that the program expects the keys as arrays of uints, as this is how the keys
 are supplied to the HAL inside the firmware. If you are reading the values
 as bytes, make sure to convert each uint's endian.
 
@@ -58,7 +58,7 @@ Standalone mode
 ---------------
 
 You may use this program as a standalone encryptor for your own STM32
-application. Set the key params for the encryption you are using then use one
+application. Set the key params for the encryption you are using, then use one
 of the following commands:
 
 - `otfdec`: Encrypts/decrypts OTFDEC region. File is "loaded" at file base
@@ -66,8 +66,8 @@ of the following commands:
   addresses correctly. Replaces plaintext file with ciphertext and vice versa.
 - `aesenc`: Encrypts using AES-GCM. Replaces plaintext file with tag and
   ciphertext concatenated.
-- `aesdec`: Decrypts using AES-GCM. Replaces file with tag and ciphertext
-  concatenated, with plaintext.
+- `aesdec`: Decrypts using AES-GCM. Replaces the concatenated tag and ciphertext
+  with plaintext.
 
 Each command takes the path of the file you want to operate on and replaces the
 contents of the file with the resulting data.
